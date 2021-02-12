@@ -10,7 +10,7 @@ import UIKit
 class TodoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
-    var num: Int = 0
+   
    // var selectedText: UITextView?
     var giveData: String = ""
     
@@ -26,7 +26,7 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         //変数にTodoMemoの中身を入れる
         TodoCell.textLabel!.text = TodoMemo[indexPath.row]
-        num = indexPath.row
+        //num = indexPath.row
         
         return TodoCell
     }
@@ -58,28 +58,37 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }*/
      
-    
+    /*
     override func prepare(for segue: UIStoryboardSegue, sender: Any!) {
         if (segue.identifier == "edit") {
            
             let sub: MemoViewController = (segue.destination as? MemoViewController)!
     
-            sub.contentTextView = TodoMemo[tableView.indexPathForSelectedRow()!.row]
+            sub.contentTextView.text = TodoMemo[tableView.indexPathForSelectedRow!.row]
             
         }
-    }
+    }*/
    
-    /*
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
             tableView.deselectRow(at: indexPath, animated: true)
-
+            /*
             let memo = TodoMemo[indexPath.row]
           
             let vc = MemoViewController.instance(memo)
             navigationController?.pushTodoViewController(vc, animated: true)
-            print("vc animated true")
+            print("vc animated true")*/
+           // let cell: UITableViewCell = self.tableView(tableView, cellForRowAt: indexPath)
+            let next = storyboard?.instantiateViewController(withIdentifier: "edit") as! MemoViewController
+            next.contentTextView.text = TodoMemo[indexPath.row]
+           // print((cell.textLabel?.text)!)
+            print(TodoMemo[indexPath.row])
+           
+         
+            //nextView.contentTextView.text = cell.textLabel?.text
+        
         }
-   */
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()

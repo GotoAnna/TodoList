@@ -63,7 +63,7 @@
         <!--追加-->
         <scene sceneID="baI-o4-kZB">
             <objects>
-                <viewController id="IOJ-bY-YBt" customClass="MemoViewController" customModule="Memo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="edit" id="IOJ-bY-YBt" customClass="MemoViewController" customModule="Memo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zza-J3-w8J">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -98,7 +98,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="contentTextView" destination="92L-3Q-kr3" id="atp-Go-KAA"/>
+                        <outlet property="contentTextView" destination="92L-3Q-kr3" id="CHZ-v7-dg8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3zU-2L-eGf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

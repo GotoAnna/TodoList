@@ -11,17 +11,17 @@ var TodoMemo = [String]()
 
 class MemoViewController: UIViewController {
 
-    @IBOutlet var contentTextView: UITextView!
+    @IBOutlet weak var contentTextView: UITextView!
   
     //ユーザーデフォルトにアクセスする方法
     //var saveData: UserDefaults = UserDefaults.standard //saveDataという名のインスタンスをつくり, 倉庫をつくる
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+       
         //contentTextView.text = saveData.object(forKey: "content")as? String
     }
-    
+
     //cancelボタン
     @IBAction func cancel(_ sender: UIBarButtonItem) {
         navigationController!.popViewController(animated: true)
@@ -37,7 +37,8 @@ class MemoViewController: UIViewController {
         TodoMemo.append(contentTextView.text!) //変数に入力内容を入れる
        
         UserDefaults.standard.set(TodoMemo, forKey: "Todo") //変数の中身をUserDefaultsに追加
-        
+       
+       // print(contentTextView.text!)
         //alertを出す
         let alert: UIAlertController = UIAlertController(title:"保存", message: "メモの保存が完了しました。", preferredStyle: .alert)
         
