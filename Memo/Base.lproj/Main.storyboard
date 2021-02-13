@@ -86,16 +86,23 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="追加" id="h1W-Ii-Xdb">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="M1a-fY-0hx">
+                        <barButtonItem key="leftBarButtonItem" title="＜すべてのメモ" id="M1a-fY-0hx">
                             <connections>
                                 <action selector="cancel:" destination="IOJ-bY-YBt" id="RDP-U1-ed1"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="3uF-Dw-IUd">
-                            <connections>
-                                <action selector="saveMemo" destination="IOJ-bY-YBt" id="SFK-dd-Kqu"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="save" id="3uF-Dw-IUd">
+                                <connections>
+                                    <action selector="saveMemo" destination="IOJ-bY-YBt" id="SFK-dd-Kqu"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Share" id="SCS-NL-Nec">
+                                <connections>
+                                    <action selector="share" destination="IOJ-bY-YBt" id="MWa-mA-rsC"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="contentTextView" destination="92L-3Q-kr3" id="CHZ-v7-dg8"/>
