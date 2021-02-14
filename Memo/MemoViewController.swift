@@ -11,7 +11,7 @@ var TodoMemo = [String]()
 
 class MemoViewController: UIViewController {
     
-    var detail: String = ""
+    var detail: String!
     
     @IBOutlet weak var contentTextView: UITextView!
   
@@ -20,12 +20,18 @@ class MemoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+       contentTextView!.text = detail
+        
         //contentTextView.text = saveData.object(forKey: "content")as? String
        // contentTextView.text = "本文"
         //print(contentTextView)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+       
+       
+    }
     //cancelボタン
     @IBAction func cancel(_ sender: UIBarButtonItem) {
         navigationController!.popViewController(animated: true)
@@ -38,12 +44,25 @@ class MemoViewController: UIViewController {
         //UserDefaultsに鍵を使って書き込む
         //saveData.set(contentTextView.text, forKey: "content")
         //detail = contentTextView.text!
-        TodoMemo.append(contentTextView.text!) //変数に入力内容を入れる
-        detail = contentTextView.text!
+        if(flag == 1) //メモ一覧のセルをタップして編集する時
+        {
+            TodoMemo[num] = contentTextView.text!
+            print("Memo=\(TodoMemo[num])")
+        }
+        else if flag == 2 //検索結果のセルをタップして編集する時
+        {
+            TodoMemo[Enum] = contentTextView.text!
+            print("Memo=\(Enum)")
+            print("Memo=\(TodoMemo[Enum])")
+        }
+        else //新規ボタンを押した時
+        {
+            TodoMemo.append(contentTextView.text!) //変数に入力内容を入れる
+        }
+       
         UserDefaults.standard.set(TodoMemo, forKey: "Todo") //変数の中身をUserDefaultsに追加
        
-       // print(contentTextView!.text)
-       // print(contentTextView.text!)
+    
         //alertを出す
         let alert: UIAlertController = UIAlertController(title:"保存", message: "メモの保存が完了しました。", preferredStyle: .alert)
         
@@ -53,7 +72,7 @@ class MemoViewController: UIViewController {
                 title: "OK",
                 style: .default,
                 handler: {action in
-                    //self.navigationController?.popViewController(animated: true) //ボタンが押された時の動作
+                    self.navigationController?.popViewController(animated: true) //ボタンが押された時の動作
                     print("OKボタンが押されました！")
                 }
                 )

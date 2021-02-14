@@ -6,27 +6,52 @@
 //
 
 import UIKit
+var flag: Int = 0
+var num: Int = 0
+var Enum: Int = 0
+var i: Int = 0
+var searchMemo: String!
+var searchEdit: String!
+var Sbar: Int = 0
 
-class TodoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
-    @IBOutlet weak var tableView: UITableView!
+class TodoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,  UISearchResultsUpdating {
    
+    var searchController = UISearchController(searchResultsController: nil)
+    var searchResult = [String]() //検索結果配列
+  
+    @IBOutlet weak var tableView: UITableView!
+    //@IBOutlet weak var searchController: UISearchController!
+    
    // var selectedText: UITextView?
     var giveData: String = ""
+    var Snum: Int = 0
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return TodoMemo.count //表示するセル数
+        if(searchController.searchBar.text! != "")
+        {
+            //print(searchResult.count)
+            return searchResult.count
+        }
+        else{
+            return TodoMemo.count //表示するセル数
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        //変数を作る
+        //ID付きのセルを取得する
         let TodoCell : UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
-        //変数にTodoMemoの中身を入れる
-        TodoCell.textLabel!.text = TodoMemo[indexPath.row]
-        //num = indexPath.row
+        if(searchController.searchBar.text != "")
+        {
+            TodoCell.textLabel!.text = searchResult[indexPath.row]
+            Snum = indexPath.row
+        }
+        else
+        {
+            //セル付属のtextLabelにTodoMemoの中身を入れる
+            TodoCell.textLabel!.text = TodoMemo[indexPath.row]
+            //print(TodoMemo[indexPath.row])
+        }
         
         return TodoCell
     }
@@ -44,50 +69,79 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
+            flag = 0
+            i = 0
             tableView.reloadData() //TableViewの更新
         }
     
-  /*
-    func tableView(_ table: UITableView,didSelectRowAt indexPath: IndexPath) {
-        // [indexPath.row] から画像名を探し、UImage を設定
-        //selectedText = UITextView(named: TodoMemo[indexPath.row] as? String)
-       
-        if selectedText != nil {
-            // SubViewController へ遷移するために Segue を呼び出す
-            performSegue(withIdentifier: "MemoViewController",sender: nil)
+   
+    //セルをタップしたとき
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+          
+            flag = 1
+            num = indexPath.row
+            //画面遷移の前に検索バーを非表示にする
+            //self.searchController.isActive = false
+            performSegue(withIdentifier: "edit", sender: nil)
+            self.searchController.isActive = false
         }
-    }*/
-     
-    /*
+   
+    //セルの中身を渡す
     override func prepare(for segue: UIStoryboardSegue, sender: Any!) {
         if (segue.identifier == "edit") {
            
-            let sub: MemoViewController = (segue.destination as? MemoViewController)!
-    
-            sub.contentTextView.text = TodoMemo[tableView.indexPathForSelectedRow!.row]
-            
+            let next: MemoViewController = (segue.destination as? MemoViewController)!
+           
+           if (searchController.searchBar.text != "")
+           {
+                searchEdit = searchResult[num]
+                for i in 0..<TodoMemo.count
+                {
+                    if searchEdit == TodoMemo[i] //検索結果の中身とリストのセルが同じだったら
+                    {
+                        flag = 2
+                        Enum = i //リストの配列数保持
+                        print(Enum)
+                        print(TodoMemo[i])
+                    }
+                }
+                next.detail = searchResult[num]
+                print("search")
+            }
+            else
+            {
+                next.detail = TodoMemo[num]
+                print("Memo")
+            }
+           // print(next.detail!)
+           // print(searchResult.count)
         }
-    }*/
-   
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-           // tableView.deselectRow(at: indexPath, animated: true)　//セルお選択を解除
         
-            let next = storyboard?.instantiateViewController(withIdentifier: "edit") as! MemoViewController
-            next.contentTextView?.text = TodoMemo[indexPath.row]
-      
-            print(TodoMemo[indexPath.row])
-            //print(next.detail)
-            //performSegue(withIdentifier: "edit", sender: nil)
-        }
-   
+    }
     
-    //navigationController?.pushTodoViewController(vc, animated: true)
-    //let cell: UITableViewCell = self.tableView(tableView, cellForRowAt: indexPath)
-    //print((cell.textLabel?.text)!)
+    //検索ボタンを押した時の呼び出しメソッド
+    func updateSearchResults(for searchController: UISearchController) {
+        searchResult = TodoMemo.filter
+        {
+            data in return data.contains(searchController.searchBar.text!)
+        }
+        tableView.reloadData()
+    }
+    
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       
+       // searchMemo.delegate = self
+        //結果表示用のビューコントローラーに自分を設定する。
+        searchController.searchResultsUpdater = self
+        //検索中にコンテンツをグレー表示にしない
+        searchController.dimsBackgroundDuringPresentation = false
+        //テーブルビューのヘッダーにサーチバーを設定する。
+        tableView.tableHeaderView = searchController.searchBar
+        
+       
         // Do any additional setup after loading the view.
         if UserDefaults.standard.object(forKey: "Todo") != nil{
             //Todoにデータがあったら, TodoMemoにデータを渡す
