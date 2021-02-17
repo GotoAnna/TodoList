@@ -9,25 +9,29 @@ import UIKit
 var flag: Int = 0
 var num: Int = 0
 var Enum: Int = 0
-var i: Int = 0
+var Tnum: Int = 0
 var searchMemo: String!
 var searchEdit: String!
 var Sbar: Int = 0
 
 class TodoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,  UISearchResultsUpdating {
+    
    
     var searchController = UISearchController(searchResultsController: nil)
     var searchResult = [String]() //検索結果配列
-  
+    var searchDate = [String]() //検索結果日付
+    var i: Int = 0
+    var j: Int = 0
+    
     @IBOutlet weak var tableView: UITableView!
     //@IBOutlet weak var searchController: UISearchController!
     
    // var selectedText: UITextView?
     var giveData: String = ""
     var Snum: Int = 0
+    var datecount: Int = 0
     
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> (Int) {
         if(searchController.searchBar.text! != "")
         {
             //print(searchResult.count)
@@ -38,21 +42,28 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+   
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //ID付きのセルを取得する
         let TodoCell : UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         if(searchController.searchBar.text != "")
         {
             TodoCell.textLabel!.text = searchResult[indexPath.row]
+           // print(searchDate[0])
+            TodoCell.detailTextLabel!.text = searchDate[indexPath.row]
             Snum = indexPath.row
         }
         else
         {
             //セル付属のtextLabelにTodoMemoの中身を入れる
             TodoCell.textLabel!.text = TodoMemo[indexPath.row]
+            TodoCell.detailTextLabel!.text = dateText[indexPath.row]
+            //print("保存\(dateText[indexPath.row])")
+            //print("保存\(indexPath.row)")
             //print(TodoMemo[indexPath.row])
         }
-        
+        TodoCell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
         return TodoCell
     }
     
@@ -60,12 +71,15 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
             if editingStyle == UITableViewCell.EditingStyle.delete {
                 TodoMemo.remove(at: indexPath.row)
+                dateText.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath as IndexPath], with: UITableView.RowAnimation.automatic)
                 
                 //消去した内容を保存
                 UserDefaults.standard.set(TodoMemo, forKey: "Todo")
+                UserDefaults.standard.set(dateText, forKey: "Date")
             }
         }
+    
     
     override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
@@ -101,16 +115,21 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
                     {
                         flag = 2
                         Enum = i //リストの配列数保持
-                        print(Enum)
+                        //print(Enum)
                         print(TodoMemo[i])
                     }
                 }
                 next.detail = searchResult[num]
-                print("search")
+                next.date = searchDate[num]
+              //  print(searchDate[num])
+            // print("search")
             }
             else
             {
                 next.detail = TodoMemo[num]
+                next.date = dateText[num]
+                print(dateText[num])
+                print(num)
                 print("Memo")
             }
            // print(next.detail!)
@@ -119,16 +138,45 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
-    //検索ボタンを押した時の呼び出しメソッド
+    //検索文字列変更時の呼び出しメソッド
     func updateSearchResults(for searchController: UISearchController) {
+        //検索文字列を含むデータを検索結果配列に格納する
         searchResult = TodoMemo.filter
         {
+            //検索に入力した文字を含むデータを返す
             data in return data.contains(searchController.searchBar.text!)
         }
+        //検索結果と同じ日付のindexPathをTodo一覧のセルから取得する
+        searchDate = dateText
+        for i in 0..<searchResult.count
+        {
+            for j in 0..<TodoMemo.count
+            {
+                if searchResult[i] == TodoMemo[j] //検索結果の中身とTodo一覧のセルが同じだったら
+                {
+                    Tnum = j //何番めの配列なのかを取得
+                    print(Tnum)
+                    //検索結果の日付の配列にTodo一覧から取得した日付を代入
+                    searchDate[i] = dateText[Tnum] //Todo一覧のTnum番目のセル内容を代入
+                    print("\(i): \(dateText[Tnum])")
+                }
+            }
+            print(searchResult[i])
+        }
+       
         tableView.reloadData()
     }
     
-   
+    //編集
+    @IBAction func changeMode(_ sender: Any) {
+        if(tableView.isEditing == true)
+        {
+            tableView.isEditing = false
+        }
+        else{
+            tableView.isEditing = true
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -138,15 +186,23 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
         searchController.searchResultsUpdater = self
         //検索中にコンテンツをグレー表示にしない
         searchController.dimsBackgroundDuringPresentation = false
-        //テーブルビューのヘッダーにサーチバーを設定する。
-        tableView.tableHeaderView = searchController.searchBar
+        //ナビゲーションバーにセット
+        navigationItem.searchController = searchController
+        //サーチバーを常に表示
+        navigationItem.hidesSearchBarWhenScrolling = false
         
        
         // Do any additional setup after loading the view.
-        if UserDefaults.standard.object(forKey: "Todo") != nil{
+       if UserDefaults.standard.object(forKey: "Todo") != nil{
             //Todoにデータがあったら, TodoMemoにデータを渡す
             TodoMemo = UserDefaults.standard.object(forKey: "Todo") as! [String]
         }
+        
+        if UserDefaults.standard.object(forKey: "Date") != nil{
+            //Todoにデータがあったら, dateTextにデータを渡す
+            dateText = UserDefaults.standard.object(forKey: "Date") as! [String]
+        }
+        
         //tableView?.reloadData()
     }
     
