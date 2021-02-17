@@ -82,6 +82,7 @@ class MemoViewController: UIViewController {
             //print("Date=\(dateLabel.text!)")
             print("Date = \(Enum)")
         }
+        
         else //新規ボタンを押した時
         {
             TodoMemo.append(contentTextView.text!) //変数に入力内容を入れる
