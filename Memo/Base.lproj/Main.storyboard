@@ -34,7 +34,7 @@
                                     <constraint firstAttribute="width" secondItem="BdF-nH-lkg" secondAttribute="height" multiplier="107:30" id="AQc-CX-0PB"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="23"/>
-                                <state key="normal" title="Memo">
+                                <state key="normal" title="Todo">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
@@ -96,7 +96,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="追加" id="h1W-Ii-Xdb">
-                        <barButtonItem key="leftBarButtonItem" title="＜すべてのメモ" id="M1a-fY-0hx">
+                        <barButtonItem key="leftBarButtonItem" title="＜Todoリスト" id="M1a-fY-0hx">
                             <connections>
                                 <action selector="cancel:" destination="IOJ-bY-YBt" id="RDP-U1-ed1"/>
                             </connections>
@@ -123,7 +123,7 @@
             </objects>
             <point key="canvasLocation" x="2862.3188405797105" y="141.96428571428569"/>
         </scene>
-        <!--すべてのメモ-->
+        <!--Todoリスト-->
         <scene sceneID="Lrm-OK-MC6">
             <objects>
                 <viewController id="T1T-J8-uOn" customClass="TodoViewController" customModule="Memo" customModuleProvider="target" sceneMemberID="viewController">
@@ -175,14 +175,14 @@
                             <constraint firstItem="ue0-nW-ABd" firstAttribute="trailing" secondItem="xRz-QO-n4C" secondAttribute="trailing" id="zV6-oY-WZq"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="すべてのメモ" id="lZx-8F-0S7">
+                    <navigationItem key="navigationItem" title="Todoリスト" id="lZx-8F-0S7">
                         <rightBarButtonItems>
                             <barButtonItem image="square.and.pencil" catalog="system" id="rtG-by-kVf">
                                 <connections>
                                     <segue destination="IOJ-bY-YBt" kind="show" id="1UC-Y5-Lzk"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem title="Item" image="ellipsis.circle" catalog="system" id="I7n-3b-pfi">
+                            <barButtonItem title="Edit" id="I7n-3b-pfi">
                                 <connections>
                                     <action selector="changeMode:" destination="T1T-J8-uOn" id="V7Z-3z-um4"/>
                                 </connections>
@@ -190,6 +190,7 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="EditButton" destination="I7n-3b-pfi" id="hNl-kS-qJ0"/>
                         <outlet property="tableView" destination="xRz-QO-n4C" id="d6R-2S-yyW"/>
                         <segue destination="IOJ-bY-YBt" kind="show" identifier="edit" id="OSM-Yh-shD"/>
                     </connections>
@@ -222,7 +223,6 @@
     </inferredMetricsTieBreakers>
     <resources>
         <image name="checkmark.circle" catalog="system" width="128" height="121"/>
-        <image name="ellipsis.circle" catalog="system" width="128" height="121"/>
         <image name="memo.png" width="300" height="300"/>
         <image name="square.and.arrow.up" catalog="system" width="115" height="128"/>
         <image name="square.and.pencil" catalog="system" width="128" height="115"/>

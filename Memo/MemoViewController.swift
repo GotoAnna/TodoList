@@ -12,7 +12,7 @@ import UIKit
 var TodoMemo = [String]()
 var dateText = [String]()
 
-class MemoViewController: UIViewController {
+class MemoViewController: UIViewController, UITextFieldDelegate {
     
     var detail: String!
     var date: String!
@@ -35,6 +35,19 @@ class MemoViewController: UIViewController {
         //contentTextView.text = saveData.object(forKey: "content")as? String
        // contentTextView.text = "本文"
         //print(contentTextView)
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 40))//ツールバーのインスタンス生成
+        toolBar.barStyle = UIBarStyle.default //スタイルを設定
+        toolBar.sizeToFit() //画面はばに合わせてサイズを変更
+        
+        //閉じるボタンをみぎに配置するためのスペース
+        let spacer = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
+        // 閉じるボタン
+        let commitButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(MemoViewController.commitButtonTapped))
+        //スペース、閉じるボタンを右側に配置
+        toolBar.items = [spacer, commitButton]
+        // テキストフィールドにツールバーを設定
+        contentTextView.inputAccessoryView = toolBar
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -42,6 +55,10 @@ class MemoViewController: UIViewController {
        
         //dateLabel!.text = "\(Picker.date)"
     }
+    
+    @objc func commitButtonTapped() {
+            self.view.endEditing(true)
+        }
     //cancelボタン
     @IBAction func cancel(_ sender: UIBarButtonItem) {
         navigationController!.popViewController(animated: true)

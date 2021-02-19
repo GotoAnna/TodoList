@@ -24,9 +24,10 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
     var j: Int = 0
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet var EditButton: UIBarButtonItem!
+    
     //@IBOutlet weak var searchController: UISearchController!
     
-   // var selectedText: UITextView?
     var giveData: String = ""
     var Snum: Int = 0
     var datecount: Int = 0
@@ -58,6 +59,8 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
         {
             //セル付属のtextLabelにTodoMemoの中身を入れる
             TodoCell.textLabel!.text = TodoMemo[indexPath.row]
+            print(indexPath.row)
+            print(TodoMemo[indexPath.row])
             TodoCell.detailTextLabel!.text = dateText[indexPath.row]
             //print("保存\(dateText[indexPath.row])")
             //print("保存\(indexPath.row)")
@@ -79,6 +82,17 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
                 UserDefaults.standard.set(dateText, forKey: "Date")
             }
         }
+    
+    //セルの並び替え
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let todoM = TodoMemo[sourceIndexPath.row]
+        TodoMemo.remove(at: sourceIndexPath.row)
+        TodoMemo.insert(todoM, at: destinationIndexPath.row)
+        
+        let todoD = dateText[sourceIndexPath.row]
+        dateText.remove(at: sourceIndexPath.row)
+        dateText.insert(todoD, at: destinationIndexPath.row)
+    }
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -172,9 +186,11 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
         if(tableView.isEditing == true)
         {
             tableView.isEditing = false
+            EditButton.title = "Edit"
         }
         else{
             tableView.isEditing = true
+            EditButton.title = "Done"
         }
     }
     
