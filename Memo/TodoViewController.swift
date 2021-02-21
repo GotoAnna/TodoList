@@ -10,9 +10,6 @@ var flag: Int = 0
 var num: Int = 0
 var Enum: Int = 0
 var Tnum: Int = 0
-var searchMemo: String!
-var searchEdit: String!
-var Sbar: Int = 0
 
 class TodoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,  UISearchResultsUpdating {
     
@@ -22,6 +19,9 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
     var searchDate = [String]() //検索結果日付
     var i: Int = 0
     var j: Int = 0
+    var searchMemo: String!
+    var searchEdit: String!
+    var Sbar: Int = 0
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet var EditButton: UIBarButtonItem!
@@ -31,6 +31,7 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
     var giveData: String = ""
     var Snum: Int = 0
     var datecount: Int = 0
+    var editflag: Int = 0
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> (Int) {
         if(searchController.searchBar.text! != "")
@@ -58,6 +59,7 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
         else
         {
             //セル付属のtextLabelにTodoMemoの中身を入れる
+            
             TodoCell.textLabel!.text = TodoMemo[indexPath.row]
             print(indexPath.row)
             print(TodoMemo[indexPath.row])
@@ -70,9 +72,17 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
         return TodoCell
     }
     
+    //編集モードの時のみ消去できるようにする
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        if tableView.isEditing {
+            return .delete
+        }
+        return .none
+    }
     //セルの消去
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
             if editingStyle == UITableViewCell.EditingStyle.delete {
+                print("編集可")
                 TodoMemo.remove(at: indexPath.row)
                 dateText.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath as IndexPath], with: UITableView.RowAnimation.automatic)
@@ -81,7 +91,7 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
                 UserDefaults.standard.set(TodoMemo, forKey: "Todo")
                 UserDefaults.standard.set(dateText, forKey: "Date")
             }
-        }
+    }
     
     //セルの並び替え
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
@@ -141,8 +151,15 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
             else
             {
                 next.detail = TodoMemo[num]
+                print("ひづけ:\(dateText[num])")
+                //next.editDate.datePickerMode = UIDatePicker.Mode.dateAndTime
+                /*DateFormatter().dateStyle = .short
+                DateFormatter().timeStyle = .short
+                DateFormatter().dateFormat =  DateFormatter.dateFormat(fromTemplate: "M/d(EEE)HH:mm", options: 0, locale: Locale(identifier: "ja_JP"))*/
+                //next.editDate = DateFormatter().date(from: dateText[num])!
+                let d = DateFormatter().date(from: "2/23(Tue) 18:27")
+                print("日付:\(d)")
                 next.date = dateText[num]
-                print(dateText[num])
                 print(num)
                 print("Memo")
             }
@@ -185,12 +202,14 @@ class TodoViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBAction func changeMode(_ sender: Any) {
         if(tableView.isEditing == true)
         {
-            tableView.isEditing = false
+            tableView.isEditing = false //編集不可
             EditButton.title = "Edit"
+            editflag = 0
         }
         else{
-            tableView.isEditing = true
+            tableView.isEditing = true //編集可
             EditButton.title = "Done"
+            editflag = 1
         }
     }
     

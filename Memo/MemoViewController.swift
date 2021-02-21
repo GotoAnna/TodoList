@@ -7,16 +7,15 @@
 
 import UIKit
 
-
-
 var TodoMemo = [String]()
 var dateText = [String]()
-
+//var dateText = [Date]()
 class MemoViewController: UIViewController, UITextFieldDelegate {
     
     var detail: String!
     var date: String!
     var DATE: String!
+    var editDate: Date!
     
     let dateFormatter = DateFormatter()
     
@@ -29,6 +28,7 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
        contentTextView!.text = detail
+        //Picker.date = editDate
        //dateLabel!.text = date
         DATE = date
         //print("中身：\(date!)")
@@ -47,7 +47,11 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
         toolBar.items = [spacer, commitButton]
         // テキストフィールドにツールバーを設定
         contentTextView.inputAccessoryView = toolBar
-        
+       /* let formatter = DateFormatter()
+        formatter.dateFormat = "M/d(EEE) HH:mm"
+        formatter.locale = Locale(identifier: "ja_JP")
+        print(formatter.date(from: DATE))*/
+       // Picker.date = DateFormatter().date(from: DATE)!
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -74,19 +78,22 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
         //date = "\(Picker.date)"
        // dateLabel!.text = "\(Picker.date.string(from: Date())"
         //dateLabel!.text = "\(Picker.date)"
-        Picker.datePickerMode = .date
+        Picker.datePickerMode = UIDatePicker.Mode.dateAndTime
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .short
         dateFormatter.dateFormat =  DateFormatter.dateFormat(fromTemplate: "M/d(EEE)HH:mm", options: 0, locale: Locale(identifier: "ja_JP"))
             //"MMM dd, yyyy"
         let selectedDate = dateFormatter.string(from: Picker.date)
+        
         //dateLabel!.text = selectedDate
         DATE = selectedDate
         if(flag == 1) //メモ一覧のセルをタップして編集する時
         {
             TodoMemo[num] = contentTextView.text!
             dateText[num] = DATE
+            print("日付:\(String(describing: DATE))")
                 //dateLabel.text!
+            //dateLabel!.text = selectedDate
             print("Memo=\(TodoMemo[num])")
         }
         else if flag == 2 //検索結果のセルをタップして編集する時
@@ -102,13 +109,16 @@ class MemoViewController: UIViewController, UITextFieldDelegate {
         
         else //新規ボタンを押した時
         {
+            //let selectedDate = dateFormatter.string(from: Picker.date)
+            //let selectedDate = Picker.date
+            //DATE = selectedDate
             TodoMemo.append(contentTextView.text!) //変数に入力内容を入れる
             dateText.append(DATE)
             print("新規\(String(describing: DATE))")
             print(dateText)
                 //dateLabel.text!) //日付
         }
-       
+        
         UserDefaults.standard.set(TodoMemo, forKey: "Todo") //変数の中身をUserDefaultsに追加
         UserDefaults.standard.set(dateText, forKey: "Date")
     
